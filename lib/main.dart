@@ -1,12 +1,18 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audio_cache.dart';
 
 void main() => runApp(XylophoneApp());
 
+/// audioPlayerHandler fix from https://github.com/luanpotter/audioplayers/issues/344#issuecomment-632056587
+void audioPlayerHandler(AudioPlayerState value) => print('state => $value');
+
 class XylophoneApp extends StatelessWidget {
   void playSound(int soundNumber) {
-    final player = AudioCache();
-    player.play('note$soundNumber.wav');
+    AudioPlayer audioPlayer = new AudioPlayer();
+    audioPlayer.monitorNotificationStateChanges(audioPlayerHandler);
+    AudioCache audioCache = AudioCache();
+    audioCache.play('note$soundNumber.wav');
   }
 
   Expanded buildKey({Color color, int soundNumber}) {
@@ -16,6 +22,7 @@ class XylophoneApp extends StatelessWidget {
         onPressed: () {
           playSound(soundNumber);
         },
+        child: null,
       ),
     );
   }
